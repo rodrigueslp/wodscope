@@ -60,12 +60,10 @@ export async function POST(request: NextRequest) {
 
       // Pagamento recorrente bem-sucedido
       case 'invoice.payment_succeeded': {
-        const invoice = event.data.object as Stripe.Invoice
+        const invoice = event.data.object as Stripe.Invoice & { subscription?: string | null }
         
         if (invoice.subscription) {
-          const subscription = await stripe.subscriptions.retrieve(
-            invoice.subscription as string
-          )
+          const subscription = await stripe.subscriptions.retrieve(invoice.subscription)
           const userId = subscription.metadata?.supabase_user_id
           
           if (userId) {
@@ -83,12 +81,10 @@ export async function POST(request: NextRequest) {
 
       // Pagamento falhou
       case 'invoice.payment_failed': {
-        const invoice = event.data.object as Stripe.Invoice
+        const invoice = event.data.object as Stripe.Invoice & { subscription?: string | null }
         
         if (invoice.subscription) {
-          const subscription = await stripe.subscriptions.retrieve(
-            invoice.subscription as string
-          )
+          const subscription = await stripe.subscriptions.retrieve(invoice.subscription)
           const userId = subscription.metadata?.supabase_user_id
           
           if (userId) {
