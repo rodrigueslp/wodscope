@@ -30,8 +30,11 @@ export async function checkCredits(): Promise<CreditStatus> {
     .eq('id', user.id)
     .single()
 
+  type ProfileData = { credits: number; subscription_status: string } | null
+  const profileData = profile as ProfileData
+
   // Se não existe perfil, cria com créditos grátis
-  if (!profile) {
+  if (!profileData) {
     await supabase.from('profiles').insert({
       id: user.id,
       credits: FREE_CREDITS,
@@ -40,8 +43,8 @@ export async function checkCredits(): Promise<CreditStatus> {
     return { hasCredits: true, credits: FREE_CREDITS, isPro: false, canAnalyze: true }
   }
 
-  const isPro = profile.subscription_status === 'pro'
-  const credits = profile.credits ?? 0
+  const isPro = profileData.subscription_status === 'pro'
+  const credits = profileData.credits ?? 0
   const hasCredits = credits > 0
   const canAnalyze = isPro || hasCredits
 
@@ -66,16 +69,19 @@ export async function consumeCredit(): Promise<{ success: boolean; error?: strin
     .eq('id', user.id)
     .single()
 
-  if (!profile) {
+  type ProfileData = { credits: number; subscription_status: string } | null
+  const profileData = profile as ProfileData
+
+  if (!profileData) {
     return { success: false, error: 'Perfil não encontrado', remainingCredits: 0 }
   }
 
   // Pro users têm créditos ilimitados
-  if (profile.subscription_status === 'pro') {
+  if (profileData.subscription_status === 'pro') {
     return { success: true, remainingCredits: -1 } // -1 = ilimitado
   }
 
-  const currentCredits = profile.credits ?? 0
+  const currentCredits = profileData.credits ?? 0
   
   if (currentCredits <= 0) {
     return { success: false, error: 'Sem créditos disponíveis', remainingCredits: 0 }
