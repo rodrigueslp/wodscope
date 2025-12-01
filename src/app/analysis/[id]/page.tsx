@@ -53,12 +53,14 @@ export default function AnalysisPage() {
           getProfile()
         ])
 
-        if (wodResult.data?.ai_analysis) {
-          setAnalysis(wodResult.data.ai_analysis as WodAnalysis)
+        const wodData = wodResult.data as { ai_analysis?: unknown } | null
+        if (wodData?.ai_analysis) {
+          setAnalysis(wodData.ai_analysis as WodAnalysis)
         }
         
-        if (profileResult.data?.injuries) {
-          setUserInjuries([profileResult.data.injuries])
+        const profileData = profileResult.data as { injuries?: string } | null
+        if (profileData?.injuries) {
+          setUserInjuries([profileData.injuries])
         }
       } catch (err) {
         console.error('Erro ao carregar análise:', err)

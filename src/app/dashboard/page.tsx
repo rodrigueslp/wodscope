@@ -53,11 +53,13 @@ export default function DashboardPage() {
           checkCredits()
         ])
 
-        if (profileResult.data) {
-          setProfile(profileResult.data)
+        const profileData = profileResult.data as Profile | null
+        if (profileData) {
+          setProfile(profileData)
         }
-        if (wodsResult.data) {
-          setRecentWods(wodsResult.data)
+        const wodsData = wodsResult.data as Wod[] | null
+        if (wodsData) {
+          setRecentWods(wodsData)
         }
         setCreditStatus(creditsResult)
       } catch (err) {

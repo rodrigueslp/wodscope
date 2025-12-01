@@ -52,15 +52,16 @@ export default function ProfilePage() {
           checkCredits()
         ])
 
-        if (profileResult.data) {
-          setProfile(profileResult.data)
+        const profileData = profileResult.data as Profile | null
+        if (profileData) {
+          setProfile(profileData)
           setFormData({
-            name: profileResult.data.full_name || "",
-            squat: profileResult.data.prs?.squat?.toString() || "",
-            deadlift: profileResult.data.prs?.deadlift?.toString() || "",
-            snatch: profileResult.data.prs?.snatch?.toString() || "",
-            clean: profileResult.data.prs?.clean?.toString() || "",
-            injuries: profileResult.data.injuries || ""
+            name: profileData.full_name || "",
+            squat: profileData.prs?.squat?.toString() || "",
+            deadlift: profileData.prs?.deadlift?.toString() || "",
+            snatch: profileData.prs?.snatch?.toString() || "",
+            clean: profileData.prs?.clean?.toString() || "",
+            injuries: profileData.injuries || ""
           })
         }
         setCreditStatus(creditsResult)
@@ -102,7 +103,8 @@ export default function ProfilePage() {
         setIsEditing(false)
         // Recarregar perfil
         const updated = await getProfile()
-        if (updated.data) setProfile(updated.data)
+        const updatedData = updated.data as Profile | null
+        if (updatedData) setProfile(updatedData)
       }
     } catch {
       setError('Erro ao salvar. Tente novamente.')

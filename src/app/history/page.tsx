@@ -30,9 +30,10 @@ export default function HistoryPage() {
     const loadWods = async () => {
       try {
         const result = await getWods()
-        if (result.data) {
-          setWods(result.data)
-          setFilteredWods(result.data)
+        const wodsData = result.data as Wod[] | null
+        if (wodsData) {
+          setWods(wodsData)
+          setFilteredWods(wodsData)
         }
       } catch (err) {
         console.error('Erro ao carregar histórico:', err)
