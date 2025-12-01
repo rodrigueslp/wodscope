@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Target, ArrowLeft, Mail, Lock, User, Eye, EyeOff, CheckCircle, MailCheck } from "lucide-react"
 import { signIn, signUp, signInWithGoogle, signInWithGitHub } from "@/actions/auth"
 
-export default function AuthPage() {
+function AuthForm() {
   const searchParams = useSearchParams()
   const [isLogin, setIsLogin] = useState(searchParams.get("mode") !== "register")
   const [showPassword, setShowPassword] = useState(false)
@@ -94,23 +94,7 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col px-6 py-8">
-      {/* Back Button */}
-      <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-8">
-        <ArrowLeft className="w-4 h-4" />
-        <span className="text-sm">Voltar</span>
-      </Link>
-
-      {/* Logo */}
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 mb-4">
-          <Target className="w-8 h-8 text-primary" />
-        </div>
-        <h1 className="text-2xl font-bold">
-          Wod<span className="text-primary">Scope</span>
-        </h1>
-      </div>
-
+    <>
       {/* Email Confirmation Success */}
       {emailSent && (
         <Card className="w-full max-w-sm mx-auto glass border-green-500/20 mb-6">
@@ -308,6 +292,43 @@ export default function AuthPage() {
         </CardContent>
       </Card>
       )}
+    </>
+  )
+}
+
+function AuthLoading() {
+  return (
+    <Card className="w-full max-w-sm mx-auto glass">
+      <CardContent className="p-8 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+      </CardContent>
+    </Card>
+  )
+}
+
+export default function AuthPage() {
+  return (
+    <div className="min-h-screen flex flex-col px-6 py-8">
+      {/* Back Button */}
+      <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-8">
+        <ArrowLeft className="w-4 h-4" />
+        <span className="text-sm">Voltar</span>
+      </Link>
+
+      {/* Logo */}
+      <div className="text-center mb-8">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 mb-4">
+          <Target className="w-8 h-8 text-primary" />
+        </div>
+        <h1 className="text-2xl font-bold">
+          Wod<span className="text-primary">Scope</span>
+        </h1>
+      </div>
+
+      {/* Auth Form with Suspense */}
+      <Suspense fallback={<AuthLoading />}>
+        <AuthForm />
+      </Suspense>
 
       {/* Terms */}
       <p className="text-center text-xs text-muted-foreground mt-8 max-w-sm mx-auto">
