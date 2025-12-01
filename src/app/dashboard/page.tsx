@@ -176,7 +176,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-3">
             <Avatar className="h-12 w-12 border-2 border-primary/20">
               <AvatarFallback className="bg-primary/10 text-primary font-bold">
-                {getInitials(profile?.full_name)}
+                {getInitials(profile?.full_name ?? null)}
               </AvatarFallback>
             </Avatar>
             <div>

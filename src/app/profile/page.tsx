@@ -183,7 +183,7 @@ export default function ProfilePage() {
         <div className="flex flex-col items-center">
           <Avatar className="h-24 w-24 border-4 border-primary/20 mb-4">
             <AvatarFallback className="bg-primary/10 text-primary text-2xl font-bold">
-              {getInitials(profile?.full_name)}
+              {getInitials(profile?.full_name ?? null)}
             </AvatarFallback>
           </Avatar>
           <div className="flex items-center gap-2">
