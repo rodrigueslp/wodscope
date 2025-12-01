@@ -31,8 +31,9 @@ export async function analyzeWod(formData: FormData): Promise<AnalysisResult> {
       .eq('id', user.id)
       .single()
 
-    const userPRs = profile?.prs || {}
-    const userInjuries = profile?.injuries || 'Nenhuma informada'
+    const profileData = profile as { prs: Record<string, number> | null; injuries: string | null; full_name: string | null } | null
+    const userPRs = profileData?.prs || {}
+    const userInjuries = profileData?.injuries || 'Nenhuma informada'
 
     // 3. Extrair imagem do FormData
     const imageFile = formData.get('image') as File | null
@@ -70,7 +71,7 @@ export async function analyzeWod(formData: FormData): Promise<AnalysisResult> {
 Seu objetivo é analisar a foto de uma lousa de treino (WOD - Workout of the Day) e personalizá-la para o atleta.
 
 DADOS DO ATLETA:
-- Nome: ${profile?.full_name || 'Atleta'}
+- Nome: ${profileData?.full_name || 'Atleta'}
 - PRs (Personal Records em kg): ${JSON.stringify(userPRs)}
 - Lesões/Limitações: ${userInjuries}
 
@@ -234,14 +235,15 @@ export async function analyzeWodFromText(wodText: string): Promise<AnalysisResul
       .eq('id', user.id)
       .single()
 
-    const userPRs = profile?.prs || {}
-    const userInjuries = profile?.injuries || 'Nenhuma informada'
+    const profileData = profile as { prs: Record<string, number> | null; injuries: string | null; full_name: string | null } | null
+    const userPRs = profileData?.prs || {}
+    const userInjuries = profileData?.injuries || 'Nenhuma informada'
 
     const systemPrompt = `Você é um Head Coach de CrossFit experiente e especialista em fisiologia do exercício.
 Seu objetivo é analisar um treino de CrossFit (WOD) e personalizá-lo para o atleta.
 
 DADOS DO ATLETA:
-- Nome: ${profile?.full_name || 'Atleta'}
+- Nome: ${profileData?.full_name || 'Atleta'}
 - PRs (Personal Records em kg): ${JSON.stringify(userPRs)}
 - Lesões/Limitações: ${userInjuries}
 
