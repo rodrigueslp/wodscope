@@ -1,13 +1,20 @@
 import Stripe from 'stripe'
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('STRIPE_SECRET_KEY não configurada')
-}
+// Lazy initialization para evitar erros no build
+let _stripe: Stripe | null = null
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2025-11-17.clover',
-  typescript: true,
-})
+export function getStripe(): Stripe {
+  if (!_stripe) {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      throw new Error('STRIPE_SECRET_KEY não configurada')
+    }
+    _stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-11-17.clover',
+      typescript: true,
+    })
+  }
+  return _stripe
+}
 
 // IDs dos produtos/preços do Stripe
 // Configure esses valores após criar os produtos no Stripe Dashboard
@@ -21,4 +28,3 @@ export const STRIPE_CONFIG = {
   // Webhook secret (obtido ao criar webhook no Stripe)
   webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
 }
-
