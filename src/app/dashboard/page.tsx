@@ -20,7 +20,7 @@ import {
 import { AnalysisLoadingScreen } from "@/components/analysis"
 import { PaywallModal, PaywallBanner, SubscriptionBadge } from "@/components/paywall"
 import { analyzeWod, analyzeWodFromText } from "@/actions/analyze"
-import { checkCredits, useCredit, type CreditStatus } from "@/actions/credits"
+import { checkCredits, consumeCredit, type CreditStatus } from "@/actions/credits"
 import { getProfile } from "@/actions/profile"
 import { getWods } from "@/actions/wods"
 import type { Profile, Wod } from "@/lib/database.types"
@@ -93,7 +93,7 @@ export default function DashboardPage() {
       const result = await analyzeWod(formData)
       
       if (result.success && result.data) {
-        await useCredit()
+        await consumeCredit()
         router.push(`/analysis/${result.data.wodId}`)
       } else {
         setError(result.error || 'Erro ao analisar imagem')
@@ -123,7 +123,7 @@ export default function DashboardPage() {
       const result = await analyzeWodFromText(wodText)
       
       if (result.success && result.data) {
-        await useCredit()
+        await consumeCredit()
         router.push(`/analysis/${result.data.wodId}`)
       } else {
         setError(result.error || 'Erro ao analisar WOD')

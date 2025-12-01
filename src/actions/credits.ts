@@ -51,7 +51,7 @@ export async function checkCredits(): Promise<CreditStatus> {
 /**
  * Consome um crédito do usuário (chamado após análise bem-sucedida)
  */
-export async function useCredit(): Promise<{ success: boolean; error?: string; remainingCredits: number }> {
+export async function consumeCredit(): Promise<{ success: boolean; error?: string; remainingCredits: number }> {
   const supabase = await createClient()
   
   const { data: { user } } = await supabase.auth.getUser()
