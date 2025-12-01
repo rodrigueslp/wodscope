@@ -176,7 +176,9 @@ REGRAS:
       .select('id')
       .single()
 
-    if (wodError) {
+    const wodData = wod as { id: string } | null
+
+    if (wodError || !wodData) {
       // Mesmo com erro no banco, retornamos a análise
       console.error('Erro ao salvar WOD:', wodError)
       return {
@@ -194,7 +196,7 @@ REGRAS:
     return {
       success: true,
       data: {
-        wodId: wod.id,
+        wodId: wodData.id,
         analysis
       }
     }
@@ -293,7 +295,9 @@ Responda em português brasileiro. Seja específico e prático.`
       .select('id')
       .single()
 
-    if (wodError) {
+    const wodData = wod as { id: string } | null
+
+    if (wodError || !wodData) {
       return {
         success: true,
         data: { wodId: 'temp-' + Date.now(), analysis }
@@ -305,7 +309,7 @@ Responda em português brasileiro. Seja específico e prático.`
 
     return {
       success: true,
-      data: { wodId: wod.id, analysis }
+      data: { wodId: wodData.id, analysis }
     }
 
   } catch (error) {
