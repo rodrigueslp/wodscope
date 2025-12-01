@@ -20,7 +20,9 @@ export async function POST() {
       .eq('id', user.id)
       .single()
 
-    if (!profile?.stripe_customer_id) {
+    const profileData = profile as { stripe_customer_id: string | null } | null
+
+    if (!profileData?.stripe_customer_id) {
       return NextResponse.json(
         { error: 'Nenhuma assinatura encontrada' },
         { status: 404 }
@@ -29,7 +31,7 @@ export async function POST() {
 
     // Criar sessão do portal do cliente
     const session = await stripe.billingPortal.sessions.create({
-      customer: profile.stripe_customer_id,
+      customer: profileData.stripe_customer_id,
       return_url: `${STRIPE_CONFIG.siteUrl}/profile`,
     })
 
@@ -43,4 +45,3 @@ export async function POST() {
     )
   }
 }
-

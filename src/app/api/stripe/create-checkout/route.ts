@@ -20,13 +20,14 @@ export async function POST() {
       .eq('id', user.id)
       .single()
 
-    let customerId = profile?.stripe_customer_id
+    const profileData = profile as { stripe_customer_id: string | null; full_name: string | null } | null
+    let customerId = profileData?.stripe_customer_id
 
     // Criar customer no Stripe se não existir
     if (!customerId) {
       const customer = await stripe.customers.create({
         email: user.email,
-        name: profile?.full_name || undefined,
+        name: profileData?.full_name || undefined,
         metadata: {
           supabase_user_id: user.id,
         },

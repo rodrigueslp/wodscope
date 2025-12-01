@@ -116,7 +116,8 @@ export async function addCredits(userId: string, amount: number): Promise<{ succ
     .eq('id', userId)
     .single()
 
-  const currentCredits = profile?.credits ?? 0
+  const profileData = profile as { credits: number } | null
+  const currentCredits = profileData?.credits ?? 0
   const newCredits = currentCredits + amount
 
   const { error } = await supabase
