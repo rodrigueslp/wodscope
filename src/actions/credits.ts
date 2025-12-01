@@ -36,7 +36,7 @@ export async function checkCredits(): Promise<CreditStatus> {
       id: user.id,
       credits: FREE_CREDITS,
       subscription_status: 'free'
-    })
+    } as never)
     return { hasCredits: true, credits: FREE_CREDITS, isPro: false, canAnalyze: true }
   }
 
@@ -86,7 +86,7 @@ export async function consumeCredit(): Promise<{ success: boolean; error?: strin
   
   const { error } = await supabase
     .from('profiles')
-    .update({ credits: newCredits })
+    .update({ credits: newCredits } as never)
     .eq('id', user.id)
 
   if (error) {
@@ -115,7 +115,7 @@ export async function addCredits(userId: string, amount: number): Promise<{ succ
 
   const { error } = await supabase
     .from('profiles')
-    .update({ credits: newCredits })
+    .update({ credits: newCredits } as never)
     .eq('id', userId)
 
   if (error) {
@@ -133,7 +133,7 @@ export async function upgradeToPro(userId: string): Promise<{ success: boolean; 
 
   const { error } = await supabase
     .from('profiles')
-    .update({ subscription_status: 'pro' })
+    .update({ subscription_status: 'pro' } as never)
     .eq('id', userId)
 
   if (error) {

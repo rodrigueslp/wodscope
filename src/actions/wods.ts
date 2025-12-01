@@ -86,7 +86,7 @@ export async function createWod(wodData: {
 
   const { data, error } = await supabase
     .from('wods')
-    .insert(newWod)
+    .insert(newWod as never)
     .select()
     .single()
 
@@ -114,7 +114,7 @@ export async function updateWodAnalysis(id: string, ai_analysis: Json) {
 
   const { error } = await supabase
     .from('wods')
-    .update({ ai_analysis })
+    .update({ ai_analysis } as never)
     .eq('id', id)
     .eq('user_id', user.id)
 

@@ -54,7 +54,7 @@ export async function upsertProfile(formData: {
 
   const { error } = await supabase
     .from('profiles')
-    .upsert(profileData, { onConflict: 'id' })
+    .upsert(profileData as never, { onConflict: 'id' })
 
   if (error) {
     return { error: error.message, success: false }
@@ -80,7 +80,7 @@ export async function updatePRs(prs: PRs) {
 
   const { error } = await supabase
     .from('profiles')
-    .update({ prs })
+    .update({ prs } as never)
     .eq('id', user.id)
 
   if (error) {
@@ -106,7 +106,7 @@ export async function updateInjuries(injuries: string) {
 
   const { error } = await supabase
     .from('profiles')
-    .update({ injuries })
+    .update({ injuries } as never)
     .eq('id', user.id)
 
   if (error) {
@@ -132,7 +132,7 @@ export async function updateName(full_name: string) {
 
   const { error } = await supabase
     .from('profiles')
-    .update({ full_name })
+    .update({ full_name } as never)
     .eq('id', user.id)
 
   if (error) {

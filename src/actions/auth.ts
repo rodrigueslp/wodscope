@@ -58,7 +58,7 @@ export async function signUp(formData: FormData) {
       full_name: name,
       credits: 1,
       subscription_status: 'free',
-    })
+    } as never)
     
     if (profileError) {
       console.error('[SignUp] Erro ao criar perfil:', profileError.message)
@@ -116,7 +116,7 @@ export async function signIn(formData: FormData) {
         full_name: data.user.user_metadata?.full_name || email.split('@')[0],
         credits: 1,
         subscription_status: 'free',
-      })
+      } as never)
       
       revalidatePath('/', 'layout')
       return { success: true, redirectTo: '/onboarding' }

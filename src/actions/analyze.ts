@@ -172,7 +172,7 @@ REGRAS:
         image_url: storedImageUrl || imageUrl,
         original_text: analysis.workout_summary,
         ai_analysis: analysis as unknown as Record<string, unknown>
-      })
+      } as never)
       .select('id')
       .single()
 
@@ -289,7 +289,7 @@ Responda em português brasileiro. Seja específico e prático.`
         user_id: user.id,
         original_text: wodText,
         ai_analysis: analysis as unknown as Record<string, unknown>
-      })
+      } as never)
       .select('id')
       .single()
 

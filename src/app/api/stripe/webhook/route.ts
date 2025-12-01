@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
                 subscription_status: 'pro',
                 stripe_subscription_id: session.subscription as string,
                 stripe_customer_id: session.customer as string,
-              })
+              } as never)
               .eq('id', userId)
           }
         }
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
             // Garantir que continua PRO
             await supabaseAdmin
               .from('profiles')
-              .update({ subscription_status: 'pro' })
+              .update({ subscription_status: 'pro' } as never)
               .eq('id', userId)
           }
         }
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
             .update({
               subscription_status: 'free',
               stripe_subscription_id: null,
-            })
+            } as never)
             .eq('id', userId)
         }
         break
@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
             .from('profiles')
             .update({
               subscription_status: isActive ? 'pro' : 'free',
-            })
+            } as never)
             .eq('id', userId)
         }
         break

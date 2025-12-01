@@ -37,7 +37,7 @@ export async function POST() {
       // Salvar customer_id no banco
       await supabase
         .from('profiles')
-        .update({ stripe_customer_id: customerId })
+        .update({ stripe_customer_id: customerId } as never)
         .eq('id', user.id)
     }
 
