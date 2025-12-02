@@ -24,6 +24,7 @@ import { getProfile, upsertProfile } from "@/actions/profile"
 import { signOut } from "@/actions/auth"
 import { checkCredits, type CreditStatus } from "@/actions/credits"
 import { SubscriptionBadge } from "@/components/paywall"
+import { ProfileSkeleton } from "@/components/loading"
 import type { Profile } from "@/lib/database.types"
 
 export default function ProfilePage() {
@@ -126,11 +127,7 @@ export default function ProfilePage() {
   }
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-      </div>
-    )
+    return <ProfileSkeleton />
   }
 
   return (

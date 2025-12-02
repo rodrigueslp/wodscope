@@ -18,6 +18,7 @@ import {
 import { getWods, deleteWod } from "@/actions/wods"
 import type { Wod } from "@/lib/database.types"
 import type { WodAnalysis } from "@/lib/ai.types"
+import { HistorySkeleton } from "@/components/loading"
 
 export default function HistoryPage() {
   const [wods, setWods] = useState<Wod[]>([])
@@ -99,6 +100,10 @@ export default function HistoryPage() {
   }
 
   const groupedWods = groupByMonth(filteredWods)
+
+  if (isLoading) {
+    return <HistorySkeleton />
+  }
 
   return (
     <div className="min-h-screen flex flex-col pb-20">

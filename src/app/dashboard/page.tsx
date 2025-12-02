@@ -18,6 +18,7 @@ import {
   Coins
 } from "lucide-react"
 import { AnalysisLoadingScreen } from "@/components/analysis"
+import { DashboardSkeleton } from "@/components/loading"
 import { PaywallModal, PaywallBanner, SubscriptionBadge } from "@/components/paywall"
 import { analyzeWod, analyzeWodFromText } from "@/actions/analyze"
 import { checkCredits, consumeCredit, type CreditStatus } from "@/actions/credits"
@@ -154,6 +155,11 @@ export default function DashboardPage() {
     if (diffDays === 0) return `Hoje, ${date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
     if (diffDays === 1) return `Ontem, ${date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
     return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+  }
+
+  // Mostrar skeleton enquanto carrega dados iniciais
+  if (isLoadingData) {
+    return <DashboardSkeleton />
   }
 
   // Mostrar tela de loading durante análise
