@@ -22,7 +22,7 @@ export async function GET(request: Request) {
         await supabase.from('profiles').insert({
           id: data.user.id,
           full_name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0],
-          credits: 1,
+          credits: 3,
           subscription_status: 'free',
         } as never)
         // Novo usuário vai para onboarding

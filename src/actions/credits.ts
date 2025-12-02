@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
-const FREE_CREDITS = 1 // Número de análises grátis
+const FREE_CREDITS = 3 // Número de análises grátis
 
 export interface CreditStatus {
   hasCredits: boolean

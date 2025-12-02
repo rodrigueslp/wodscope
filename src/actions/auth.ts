@@ -46,7 +46,7 @@ export async function signUp(formData: FormData) {
     const { error: profileError } = await supabase.from('profiles').insert({
       id: data.user.id,
       full_name: name,
-      credits: 1,
+      credits: 3,
       subscription_status: 'free',
     } as never)
     
@@ -104,7 +104,7 @@ export async function signIn(formData: FormData) {
       await supabase.from('profiles').insert({
         id: data.user.id,
         full_name: data.user.user_metadata?.full_name || email.split('@')[0],
-        credits: 1,
+        credits: 3,
         subscription_status: 'free',
       } as never)
       
