@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import { Inter, Space_Grotesk } from "next/font/google"
 import "./globals.css"
+import { InstallPrompt } from "@/components/pwa"
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -13,13 +14,39 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-  title: "WodScope - Análise Inteligente de WODs",
-  description: "Analise sua lousa de CrossFit e receba estratégias personalizadas baseadas no seu perfil de atleta.",
+  title: "WodScope - Coach de CrossFit IA",
+  description: "Seu coach pessoal de CrossFit com Inteligência Artificial. Analise WODs, receba estratégias personalizadas e acompanhe seu progresso.",
   manifest: "/manifest.json",
+  applicationName: "WodScope",
+  keywords: ["crossfit", "wod", "treino", "fitness", "coach", "ia", "inteligência artificial"],
+  authors: [{ name: "WodScope" }],
+  creator: "WodScope",
+  publisher: "WodScope",
+  formatDetection: {
+    telephone: false,
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "WodScope",
+    startupImage: [
+      {
+        url: "/splash/splash-1170x2532.png",
+        media: "(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)",
+      },
+    ],
+  },
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    siteName: "WodScope",
+    title: "WodScope - Coach de CrossFit IA",
+    description: "Analise sua lousa de CrossFit e receba estratégias personalizadas baseadas no seu perfil.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "WodScope - Coach de CrossFit IA",
+    description: "Analise sua lousa de CrossFit e receba estratégias personalizadas.",
   },
 }
 
@@ -28,7 +55,11 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#0a0a0b",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0b" },
+    { media: "(prefers-color-scheme: light)", color: "#84cc16" },
+  ],
+  colorScheme: "dark",
 }
 
 export default function RootLayout({
@@ -39,8 +70,31 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="dark">
       <head>
-        <link rel="apple-touch-icon" href="/icon-192.png" />
+        {/* PWA Meta Tags */}
+        <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="WodScope" />
+        
+        {/* Icons */}
+        <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16.png" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180.png" />
+        <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-167.png" />
+        
+        {/* Splash Screens para iOS */}
+        <link
+          rel="apple-touch-startup-image"
+          href="/splash/splash-1170x2532.png"
+          media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)"
+        />
+        <link
+          rel="apple-touch-startup-image"
+          href="/splash/splash-1125x2436.png"
+          media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
+        />
       </head>
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased min-h-screen bg-background`}>
         <div className="relative min-h-screen">
@@ -52,9 +106,11 @@ export default function RootLayout({
           <main className="relative z-10">
             {children}
           </main>
+          
+          {/* PWA Install Prompt */}
+          <InstallPrompt />
         </div>
       </body>
     </html>
   )
 }
-

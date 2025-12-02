@@ -14,7 +14,8 @@ import {
   Share2,
   Bookmark,
   CheckCircle,
-  Trash2
+  Trash2,
+  Trophy
 } from "lucide-react"
 import {
   AnalysisSkeleton,
@@ -26,7 +27,9 @@ import {
   WorkoutSummaryCard,
   ScalingOptionCard
 } from "@/components/analysis"
+import { ResultForm } from "@/components/wod"
 import { getWodById, deleteWod } from "@/actions/wods"
+import type { ResultType } from "@/lib/database.types"
 import { getProfile } from "@/actions/profile"
 import type { WodAnalysis } from "@/lib/ai.types"
 
@@ -44,6 +47,12 @@ export default function AnalysisPage() {
   const [isDeleting, setIsDeleting] = useState(false)
   const [analysis, setAnalysis] = useState<WodAnalysis | null>(null)
   const [userInjuries, setUserInjuries] = useState<string[]>([])
+  const [existingResult, setExistingResult] = useState<{
+    result_type: ResultType | null
+    result_value: string | null
+    feeling: number | null
+    athlete_notes: string | null
+  } | null>(null)
 
   useEffect(() => {
     const loadData = async () => {
@@ -53,9 +62,26 @@ export default function AnalysisPage() {
           getProfile()
         ])
 
-        const wodData = wodResult.data as { ai_analysis?: unknown } | null
+        const wodData = wodResult.data as { 
+          ai_analysis?: unknown
+          result_type?: ResultType | null
+          result_value?: string | null
+          feeling?: number | null
+          athlete_notes?: string | null
+        } | null
+        
         if (wodData?.ai_analysis) {
           setAnalysis(wodData.ai_analysis as WodAnalysis)
+        }
+        
+        // Carregar resultado existente se houver
+        if (wodData?.result_type) {
+          setExistingResult({
+            result_type: wodData.result_type,
+            result_value: wodData.result_value || null,
+            feeling: wodData.feeling || null,
+            athlete_notes: wodData.athlete_notes || null
+          })
         }
         
         const profileData = profileResult.data as { injuries?: string } | null
@@ -179,7 +205,7 @@ export default function AnalysisPage() {
       {/* Tabs */}
       <div className="px-6 flex-1">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="strategy" className="gap-1.5">
               <Target className="w-4 h-4" />
               <span className="hidden sm:inline">Estratégia</span>
@@ -191,6 +217,10 @@ export default function AnalysisPage() {
             <TabsTrigger value="adaptations" className="gap-1.5">
               <Shield className="w-4 h-4" />
               <span className="hidden sm:inline">Adaptações</span>
+            </TabsTrigger>
+            <TabsTrigger value="result" className="gap-1.5">
+              <Trophy className="w-4 h-4" />
+              <span className="hidden sm:inline">Resultado</span>
             </TabsTrigger>
           </TabsList>
 
@@ -301,6 +331,15 @@ export default function AnalysisPage() {
             <InjuryAlert 
               injury="Sempre faça um aquecimento adequado. Se sentir dor, pare imediatamente e consulte um profissional."
               variant="info"
+            />
+          </TabsContent>
+
+          {/* Result Tab */}
+          <TabsContent value="result" className="space-y-4 mt-6">
+            <ResultForm 
+              wodId={params.id as string}
+              wodSummary={analysis.workout_summary}
+              existingResult={existingResult || undefined}
             />
           </TabsContent>
         </Tabs>

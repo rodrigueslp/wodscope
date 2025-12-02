@@ -57,6 +57,12 @@ export interface Database {
           original_text: string | null
           ai_analysis: Json | null
           created_at: string
+          // Campos de resultado
+          result_type: 'time' | 'reps' | 'rounds_reps' | 'load' | 'completed' | null
+          result_value: string | null
+          feeling: number | null // 1-4
+          athlete_notes: string | null
+          completed_at: string | null
         }
         Insert: {
           id?: string
@@ -65,6 +71,11 @@ export interface Database {
           original_text?: string | null
           ai_analysis?: Json | null
           created_at?: string
+          result_type?: 'time' | 'reps' | 'rounds_reps' | 'load' | 'completed' | null
+          result_value?: string | null
+          feeling?: number | null
+          athlete_notes?: string | null
+          completed_at?: string | null
         }
         Update: {
           id?: string
@@ -73,6 +84,11 @@ export interface Database {
           original_text?: string | null
           ai_analysis?: Json | null
           created_at?: string
+          result_type?: 'time' | 'reps' | 'rounds_reps' | 'load' | 'completed' | null
+          result_value?: string | null
+          feeling?: number | null
+          athlete_notes?: string | null
+          completed_at?: string | null
         }
       }
     }
@@ -87,4 +103,32 @@ export type ProfileUpdate = Database['public']['Tables']['profiles']['Update']
 export type Wod = Database['public']['Tables']['wods']['Row']
 export type WodInsert = Database['public']['Tables']['wods']['Insert']
 export type WodUpdate = Database['public']['Tables']['wods']['Update']
+
+// Tipos para resultado do WOD
+export type ResultType = 'time' | 'reps' | 'rounds_reps' | 'load' | 'completed'
+
+export interface WodResult {
+  result_type: ResultType
+  result_value: string
+  feeling: number // 1-4
+  athlete_notes?: string
+}
+
+export const FEELING_EMOJIS = ['😫', '😐', '😊', '🔥'] as const
+export const FEELING_LABELS = ['Muito difícil', 'Normal', 'Bom', 'Excelente'] as const
+
+export const RESULT_TYPE_LABELS: Record<ResultType, string> = {
+  time: 'Tempo (For Time)',
+  reps: 'Repetições (AMRAP)',
+  rounds_reps: 'Rounds + Reps',
+  load: 'Carga (1RM/Max)',
+  completed: 'Completado'
+}
+
+export interface PostWodFeedback {
+  performance_rating: 'excelente' | 'bom' | 'regular' | 'abaixo'
+  feedback: string
+  tips_for_next: string
+  encouragement: string
+}
 

@@ -129,7 +129,7 @@ export function PaywallModal({ isOpen, onClose, creditsUsed = 1 }: PaywallModalP
           {/* Pricing */}
           <div className="text-center py-4">
             <div className="inline-flex items-baseline gap-1">
-              <span className="text-4xl font-bold">R$ 29,90</span>
+              <span className="text-4xl font-bold">R$ 9,90</span>
               <span className="text-muted-foreground">/mês</span>
             </div>
             <p className="text-xs text-muted-foreground mt-1">
@@ -186,7 +186,7 @@ export function PaywallBanner({ onUpgrade }: { onUpgrade: () => void }) {
         <div className="flex-1">
           <p className="font-medium">Upgrade para Pro</p>
           <p className="text-sm text-muted-foreground">
-            Análises ilimitadas por apenas R$ 29,90/mês
+            Análises ilimitadas por apenas R$ 9,90/mês
           </p>
         </div>
         <Button size="sm" onClick={onUpgrade}>
