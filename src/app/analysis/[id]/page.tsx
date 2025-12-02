@@ -352,8 +352,17 @@ export default function AnalysisPage() {
       <div className="px-6 mt-6">
         <Link href="/dashboard">
           <Button size="lg" className="w-full glow-lime">
-            <Target className="w-5 h-5 mr-2" />
-            Pronto para o WOD!
+            {existingResult?.result_type ? (
+              <>
+                <ArrowLeft className="w-5 h-5 mr-2" />
+                Voltar ao Dashboard
+              </>
+            ) : (
+              <>
+                <Target className="w-5 h-5 mr-2" />
+                Pronto para o WOD!
+              </>
+            )}
           </Button>
         </Link>
       </div>
