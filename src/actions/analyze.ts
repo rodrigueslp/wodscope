@@ -409,10 +409,15 @@ Responda com um feedback direto e motivador em português brasileiro. Não use J
     }
 
     // Salvar feedback no WOD
-    await supabase
+    const { error: updateError } = await supabase
       .from('wods')
       .update({ post_wod_feedback: feedback } as never)
       .eq('id', wodId)
+      .eq('user_id', user.id)
+
+    if (updateError) {
+      console.error('Erro ao salvar feedback:', updateError)
+    }
 
     return { success: true, feedback }
 
