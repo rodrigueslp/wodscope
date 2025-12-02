@@ -23,7 +23,7 @@ export const STRIPE_CONFIG = {
   priceId: process.env.STRIPE_PRICE_ID || '',
   
   // URL do seu site
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001',
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
   
   // Webhook secret (obtido ao criar webhook no Stripe)
   webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
