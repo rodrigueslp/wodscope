@@ -353,12 +353,17 @@ export async function generatePostWodFeedback(
   feeling: number,
   athleteNotes?: string
 ): Promise<{ success: boolean; feedback?: string; error?: string }> {
+  console.log('[generatePostWodFeedback] Iniciando...', { wodId, wodSummary, resultType, resultValue, feeling })
+  
   try {
     const supabase = await createClient()
     
     const { data: { user } } = await supabase.auth.getUser()
     
+    console.log('[generatePostWodFeedback] User:', user?.id)
+    
     if (!user) {
+      console.log('[generatePostWodFeedback] Usuário não autenticado')
       return { success: false, error: 'Não autenticado' }
     }
 
@@ -404,21 +409,31 @@ Responda com um feedback direto e motivador em português brasileiro. Não use J
 
     const feedback = response.choices[0]?.message?.content
 
+    console.log('[generatePostWodFeedback] Feedback gerado:', feedback?.substring(0, 50))
+
     if (!feedback) {
+      console.log('[generatePostWodFeedback] Feedback vazio')
       return { success: false, error: 'Não foi possível gerar feedback' }
     }
 
     // Salvar feedback no WOD
-    const { error: updateError } = await supabase
+    console.log('[generatePostWodFeedback] Salvando no banco... wodId:', wodId, 'userId:', user.id)
+    
+    const { data: updateData, error: updateError } = await supabase
       .from('wods')
       .update({ post_wod_feedback: feedback } as never)
       .eq('id', wodId)
       .eq('user_id', user.id)
+      .select()
+
+    console.log('[generatePostWodFeedback] Resultado update:', { updateData, updateError })
 
     if (updateError) {
-      console.error('Erro ao salvar feedback:', updateError)
+      console.error('[generatePostWodFeedback] Erro ao salvar:', updateError)
+      return { success: false, error: updateError.message }
     }
 
+    console.log('[generatePostWodFeedback] Feedback salvo com sucesso!')
     return { success: true, feedback }
 
   } catch (error) {
