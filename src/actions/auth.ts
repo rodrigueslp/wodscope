@@ -31,7 +31,7 @@ export async function signUp(formData: FormData) {
 
   console.log('[SignUp] Resposta:', JSON.stringify(data, null, 2))
 
-  // Verificar se precisa de confirmação de email
+  // Verificar se usuário já existe
   if (data.user && data.user.identities && data.user.identities.length === 0) {
     console.log('[SignUp] Usuário já existe')
     return { 
@@ -40,18 +40,8 @@ export async function signUp(formData: FormData) {
     }
   }
 
-  // Se o email precisa de confirmação
-  if (data.user && !data.session) {
-    console.log('[SignUp] Email precisa de confirmação')
-    return { 
-      success: true, 
-      needsEmailConfirmation: true,
-      message: 'Verifique seu email para confirmar o cadastro!' 
-    }
-  }
-
   // Criar perfil inicial com 1 crédito grátis
-  if (data.user) {
+  if (data.user && data.session) {
     console.log('[SignUp] Criando perfil para:', data.user.id)
     const { error: profileError } = await supabase.from('profiles').insert({
       id: data.user.id,

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Target, ArrowLeft, Mail, Lock, User, Eye, EyeOff, CheckCircle, MailCheck } from "lucide-react"
+import { Target, ArrowLeft, Mail, Lock, User, Eye, EyeOff } from "lucide-react"
 import { signIn, signUp, signInWithGoogle } from "@/actions/auth"
 
 function AuthForm() {
@@ -16,8 +16,6 @@ function AuthForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [emailSent, setEmailSent] = useState(false)
-  const [registeredEmail, setRegisteredEmail] = useState("")
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -33,15 +31,6 @@ function AuthForm() {
 
       if (result?.error) {
         setError(result.error)
-        setIsLoading(false)
-        return
-      }
-
-      // Se precisa confirmar email
-      if ('needsEmailConfirmation' in result && result.needsEmailConfirmation) {
-        setError(null)
-        setRegisteredEmail(formData.get('email') as string)
-        setEmailSent(true)
         setIsLoading(false)
         return
       }
@@ -77,52 +66,7 @@ function AuthForm() {
 
 
   return (
-    <>
-      {/* Email Confirmation Success */}
-      {emailSent && (
-        <Card className="w-full max-w-sm mx-auto glass border-green-500/20 mb-6">
-          <CardContent className="p-6 text-center">
-            <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
-              <MailCheck className="w-8 h-8 text-green-500" />
-            </div>
-            <h2 className="text-lg font-bold mb-2">Verifique seu email!</h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              Enviamos um link de confirmação para:
-            </p>
-            <p className="font-medium text-primary mb-4 break-all">
-              {registeredEmail}
-            </p>
-            <div className="space-y-3 text-sm text-muted-foreground">
-              <p className="flex items-center gap-2 justify-center">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                Clique no link do email
-              </p>
-              <p className="flex items-center gap-2 justify-center">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                Volte aqui e faça login
-              </p>
-            </div>
-            <Button 
-              variant="outline" 
-              className="w-full mt-6"
-              onClick={() => {
-                setEmailSent(false)
-                setIsLogin(true)
-              }}
-            >
-              <Mail className="w-4 h-4 mr-2" />
-              Ir para Login
-            </Button>
-            <p className="text-xs text-muted-foreground mt-4">
-              Não recebeu? Verifique a pasta de spam.
-            </p>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Auth Card */}
-      {!emailSent && (
-      <Card className="w-full max-w-sm mx-auto glass">
+    <Card className="w-full max-w-sm mx-auto glass">
         <CardHeader className="text-center pb-4">
           <CardTitle className="text-xl">
             {isLogin ? "Bem-vindo de volta" : "Criar conta"}
@@ -260,8 +204,6 @@ function AuthForm() {
           </Button>
         </CardContent>
       </Card>
-      )}
-    </>
   )
 }
 
