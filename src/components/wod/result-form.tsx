@@ -138,7 +138,7 @@ export function ResultForm({ wodId, wodSummary, onSuccess, existingResult }: Res
             </div>
             {notes && (
               <p className="text-sm text-muted-foreground italic border-l-2 border-green-500/30 pl-3 mb-4">
-                "{notes}"
+                &ldquo;{notes}&rdquo;
               </p>
             )}
             <Button 
