@@ -52,6 +52,7 @@ export default function AnalysisPage() {
     result_value: string | null
     feeling: number | null
     athlete_notes: string | null
+    post_wod_feedback: string | null
   } | null>(null)
 
   useEffect(() => {
@@ -68,6 +69,7 @@ export default function AnalysisPage() {
           result_value?: string | null
           feeling?: number | null
           athlete_notes?: string | null
+          post_wod_feedback?: string | null
         } | null
         
         if (wodData?.ai_analysis) {
@@ -80,7 +82,8 @@ export default function AnalysisPage() {
             result_type: wodData.result_type,
             result_value: wodData.result_value || null,
             feeling: wodData.feeling || null,
-            athlete_notes: wodData.athlete_notes || null
+            athlete_notes: wodData.athlete_notes || null,
+            post_wod_feedback: wodData.post_wod_feedback || null
           })
         }
         

@@ -35,6 +35,7 @@ interface ResultFormProps {
     result_value: string | null
     feeling: number | null
     athlete_notes: string | null
+    post_wod_feedback?: string | null
   }
 }
 
@@ -63,7 +64,7 @@ export function ResultForm({ wodId, wodSummary, onSuccess, existingResult }: Res
   const [isGeneratingFeedback, setIsGeneratingFeedback] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(!!existingResult?.result_type)
-  const [aiFeedback, setAiFeedback] = useState<string | null>(null)
+  const [aiFeedback, setAiFeedback] = useState<string | null>(existingResult?.post_wod_feedback || null)
 
   const handleSubmit = async () => {
     if (!resultType || !feeling) {

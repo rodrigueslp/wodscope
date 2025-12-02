@@ -408,8 +408,11 @@ Responda com um feedback direto e motivador em português brasileiro. Não use J
       return { success: false, error: 'Não foi possível gerar feedback' }
     }
 
-    // Salvar feedback no WOD (opcional - adicionar coluna depois)
-    // await supabase.from('wods').update({ post_wod_feedback: feedback }).eq('id', wodId)
+    // Salvar feedback no WOD
+    await supabase
+      .from('wods')
+      .update({ post_wod_feedback: feedback } as never)
+      .eq('id', wodId)
 
     return { success: true, feedback }
 
