@@ -25,16 +25,35 @@ export async function analyzeWod(formData: FormData): Promise<AnalysisResult> {
       return { success: false, error: 'Não autenticado' }
     }
 
-    // 2. Buscar perfil do usuário (PRs e lesões)
+    // 2. Buscar perfil do usuário (PRs, lesões e dados físicos)
     const { data: profile } = await supabase
       .from('profiles')
-      .select('prs, injuries, full_name')
+      .select('prs, injuries, full_name, age, gender, height, experience_years')
       .eq('id', user.id)
       .single()
 
-    const profileData = profile as { prs: Record<string, number> | null; injuries: string | null; full_name: string | null } | null
+    const profileData = profile as { 
+      prs: Record<string, number> | null
+      injuries: string | null
+      full_name: string | null
+      age: number | null
+      gender: string | null
+      height: number | null
+      experience_years: number | null
+    } | null
+    
     const userPRs = profileData?.prs || {}
     const userInjuries = profileData?.injuries || 'Nenhuma informada'
+    
+    // Formatação dos dados físicos
+    const genderLabel = profileData?.gender === 'male' ? 'Masculino' : 
+                        profileData?.gender === 'female' ? 'Feminino' : 
+                        profileData?.gender === 'other' ? 'Outro' : 'Não informado'
+    
+    const experienceLabel = !profileData?.experience_years ? 'Não informado' :
+                            profileData.experience_years < 1 ? 'Iniciante (menos de 1 ano)' :
+                            profileData.experience_years < 3 ? 'Intermediário (1-3 anos)' :
+                            profileData.experience_years < 5 ? 'Avançado (3-5 anos)' : 'Elite (5+ anos)'
 
     // 2.1 Buscar histórico de treinos
     const wodHistory = await getFormattedHistory()
@@ -77,9 +96,20 @@ export async function analyzeWod(formData: FormData): Promise<AnalysisResult> {
 
 IMPORTANTE: Sempre use a 2ª pessoa (você/seu/sua). Fale como se estivesse ao lado do atleta, motivando e orientando. Seja direto, amigável e use um tom de coach que conhece bem o atleta.
 
-DADOS DO ATLETA ${athleteName.toUpperCase()}:
+PERFIL DO ATLETA ${athleteName.toUpperCase()}:
+- Idade: ${profileData?.age || 'Não informada'} anos
+- Sexo: ${genderLabel}
+- Altura: ${profileData?.height ? `${profileData.height}cm` : 'Não informada'}
+- Experiência: ${experienceLabel}
 - PRs (Personal Records em kg): ${JSON.stringify(userPRs)}
 - Lesões/Limitações: ${userInjuries}
+
+CONSIDERAÇÕES BASEADAS NO PERFIL:
+${profileData?.gender === 'female' ? '- Use pesos RX femininos como referência (ex: KB 16kg, barbell 35kg)' : profileData?.gender === 'male' ? '- Use pesos RX masculinos como referência (ex: KB 24kg, barbell 43kg)' : ''}
+${profileData?.age && profileData.age > 40 ? '- Atleta master: considere recuperação mais longa e aquecimento mais completo' : ''}
+${profileData?.age && profileData.age < 25 ? '- Atleta jovem: pode trabalhar com intensidades mais altas' : ''}
+${profileData?.experience_years && profileData.experience_years < 1 ? '- Iniciante: priorize movimentos básicos e técnica sobre intensidade' : ''}
+${profileData?.experience_years && profileData.experience_years >= 5 ? '- Atleta experiente: pode utilizar estratégias avançadas de pacing' : ''}
 
 HISTÓRICO DE TREINOS RECENTES:
 ${wodHistory}
@@ -246,13 +276,31 @@ export async function analyzeWodFromText(wodText: string): Promise<AnalysisResul
 
     const { data: profile } = await supabase
       .from('profiles')
-      .select('prs, injuries, full_name')
+      .select('prs, injuries, full_name, age, gender, height, experience_years')
       .eq('id', user.id)
       .single()
 
-    const profileData = profile as { prs: Record<string, number> | null; injuries: string | null; full_name: string | null } | null
+    const profileData = profile as { 
+      prs: Record<string, number> | null
+      injuries: string | null
+      full_name: string | null
+      age: number | null
+      gender: string | null
+      height: number | null
+      experience_years: number | null
+    } | null
+    
     const userPRs = profileData?.prs || {}
     const userInjuries = profileData?.injuries || 'Nenhuma informada'
+    
+    const genderLabel = profileData?.gender === 'male' ? 'Masculino' : 
+                        profileData?.gender === 'female' ? 'Feminino' : 
+                        profileData?.gender === 'other' ? 'Outro' : 'Não informado'
+    
+    const experienceLabel = !profileData?.experience_years ? 'Não informado' :
+                            profileData.experience_years < 1 ? 'Iniciante (menos de 1 ano)' :
+                            profileData.experience_years < 3 ? 'Intermediário (1-3 anos)' :
+                            profileData.experience_years < 5 ? 'Avançado (3-5 anos)' : 'Elite (5+ anos)'
 
     // Buscar histórico de treinos
     const wodHistory = await getFormattedHistory()
@@ -263,9 +311,20 @@ export async function analyzeWodFromText(wodText: string): Promise<AnalysisResul
 
 IMPORTANTE: Sempre use a 2ª pessoa (você/seu/sua). Fale como se estivesse ao lado do atleta, motivando e orientando.
 
-DADOS DO ATLETA ${athleteName.toUpperCase()}:
+PERFIL DO ATLETA ${athleteName.toUpperCase()}:
+- Idade: ${profileData?.age || 'Não informada'} anos
+- Sexo: ${genderLabel}
+- Altura: ${profileData?.height ? `${profileData.height}cm` : 'Não informada'}
+- Experiência: ${experienceLabel}
 - PRs (Personal Records em kg): ${JSON.stringify(userPRs)}
 - Lesões/Limitações: ${userInjuries}
+
+CONSIDERAÇÕES BASEADAS NO PERFIL:
+${profileData?.gender === 'female' ? '- Use pesos RX femininos como referência (ex: KB 16kg, barbell 35kg)' : profileData?.gender === 'male' ? '- Use pesos RX masculinos como referência (ex: KB 24kg, barbell 43kg)' : ''}
+${profileData?.age && profileData.age > 40 ? '- Atleta master: considere recuperação mais longa e aquecimento mais completo' : ''}
+${profileData?.age && profileData.age < 25 ? '- Atleta jovem: pode trabalhar com intensidades mais altas' : ''}
+${profileData?.experience_years && profileData.experience_years < 1 ? '- Iniciante: priorize movimentos básicos e técnica sobre intensidade' : ''}
+${profileData?.experience_years && profileData.experience_years >= 5 ? '- Atleta experiente: pode utilizar estratégias avançadas de pacing' : ''}
 
 HISTÓRICO DE TREINOS RECENTES:
 ${wodHistory}

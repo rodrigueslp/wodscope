@@ -14,6 +14,10 @@ export type PRs = {
   [key: string]: number | undefined
 }
 
+// Tipos para dados do atleta
+export type Gender = 'male' | 'female' | 'other'
+export type ExperienceLevel = 'beginner' | 'intermediate' | 'advanced' | 'elite'
+
 export interface Database {
   public: {
     Tables: {
@@ -27,6 +31,11 @@ export interface Database {
           credits: number
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
+          // Novos campos de perfil do atleta
+          age: number | null
+          gender: Gender | null
+          height: number | null // em cm
+          experience_years: number | null // tempo de treino em anos
         }
         Insert: {
           id: string
@@ -37,6 +46,10 @@ export interface Database {
           credits?: number
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
+          age?: number | null
+          gender?: Gender | null
+          height?: number | null
+          experience_years?: number | null
         }
         Update: {
           id?: string
@@ -47,6 +60,10 @@ export interface Database {
           credits?: number
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
+          age?: number | null
+          gender?: Gender | null
+          height?: number | null
+          experience_years?: number | null
         }
       }
       wods: {
@@ -123,6 +140,26 @@ export const RESULT_TYPE_LABELS: Record<ResultType, string> = {
   rounds_reps: 'Rounds + Reps',
   load: 'Carga (1RM/Max)',
   completed: 'Completado'
+}
+
+export const GENDER_LABELS: Record<Gender, string> = {
+  male: 'Masculino',
+  female: 'Feminino',
+  other: 'Outro'
+}
+
+export const EXPERIENCE_LABELS: Record<ExperienceLevel, string> = {
+  beginner: 'Iniciante (< 1 ano)',
+  intermediate: 'Intermediário (1-3 anos)',
+  advanced: 'Avançado (3-5 anos)',
+  elite: 'Elite (5+ anos)'
+}
+
+export const EXPERIENCE_YEARS: Record<ExperienceLevel, string> = {
+  beginner: 'menos de 1 ano',
+  intermediate: '1 a 3 anos',
+  advanced: '3 a 5 anos',
+  elite: 'mais de 5 anos'
 }
 
 export interface PostWodFeedback {

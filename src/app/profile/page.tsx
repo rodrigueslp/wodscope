@@ -18,14 +18,17 @@ import {
   AlertTriangle,
   Save,
   LogOut,
-  Crown
+  Crown,
+  Ruler,
+  User
 } from "lucide-react"
 import { getProfile, upsertProfile } from "@/actions/profile"
 import { signOut } from "@/actions/auth"
 import { checkCredits, type CreditStatus } from "@/actions/credits"
 import { SubscriptionBadge } from "@/components/paywall"
 import { ProfileSkeleton } from "@/components/loading"
-import type { Profile } from "@/lib/database.types"
+import type { Profile, Gender, ExperienceLevel } from "@/lib/database.types"
+import { GENDER_LABELS, EXPERIENCE_LABELS } from "@/lib/database.types"
 
 export default function ProfilePage() {
   const router = useRouter()
@@ -38,6 +41,10 @@ export default function ProfilePage() {
   
   const [formData, setFormData] = useState({
     name: "",
+    age: "",
+    gender: "" as Gender | "",
+    height: "",
+    experience_years: "",
     squat: "",
     deadlift: "",
     snatch: "",
@@ -58,6 +65,10 @@ export default function ProfilePage() {
           setProfile(profileData)
           setFormData({
             name: profileData.full_name || "",
+            age: profileData.age?.toString() || "",
+            gender: profileData.gender || "",
+            height: profileData.height?.toString() || "",
+            experience_years: profileData.experience_years?.toString() || "",
             squat: profileData.prs?.squat?.toString() || "",
             deadlift: profileData.prs?.deadlift?.toString() || "",
             snatch: profileData.prs?.snatch?.toString() || "",
@@ -89,6 +100,10 @@ export default function ProfilePage() {
     try {
       const result = await upsertProfile({
         full_name: formData.name,
+        age: formData.age ? Number(formData.age) : undefined,
+        gender: formData.gender || undefined,
+        height: formData.height ? Number(formData.height) : undefined,
+        experience_years: formData.experience_years ? Number(formData.experience_years) : undefined,
         prs: {
           squat: formData.squat ? Number(formData.squat) : undefined,
           deadlift: formData.deadlift ? Number(formData.deadlift) : undefined,
@@ -243,7 +258,7 @@ export default function ProfilePage() {
         <Card className="glass">
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <Settings className="w-4 h-4 text-primary" />
+              <User className="w-4 h-4 text-primary" />
               Informações Básicas
             </CardTitle>
           </CardHeader>
@@ -258,6 +273,112 @@ export default function ProfilePage() {
                 disabled={!isEditing}
                 className={!isEditing ? "bg-muted" : ""}
               />
+            </div>
+            <div className="space-y-2">
+              <Label>Sexo</Label>
+              {isEditing ? (
+                <div className="grid grid-cols-3 gap-2">
+                  {(Object.entries(GENDER_LABELS) as [Gender, string][]).map(([value, label]) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, gender: value }))}
+                      className={`p-2 rounded-lg border text-xs font-medium transition-all ${
+                        formData.gender === value
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-muted bg-muted/50 hover:bg-muted"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <Input
+                  value={formData.gender ? GENDER_LABELS[formData.gender] : "Não informado"}
+                  disabled
+                  className="bg-muted"
+                />
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Physical Data */}
+        <Card className="glass">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Ruler className="w-4 h-4 text-primary" />
+              Dados Físicos
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="age" className="text-xs">Idade</Label>
+                <Input
+                  id="age"
+                  name="age"
+                  type="number"
+                  value={formData.age}
+                  onChange={handleChange}
+                  disabled={!isEditing}
+                  className={`text-center ${!isEditing ? "bg-muted" : ""}`}
+                  placeholder="Ex: 30"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="height" className="text-xs">Altura (cm)</Label>
+                <Input
+                  id="height"
+                  name="height"
+                  type="number"
+                  value={formData.height}
+                  onChange={handleChange}
+                  disabled={!isEditing}
+                  className={`text-center ${!isEditing ? "bg-muted" : ""}`}
+                  placeholder="Ex: 175"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs">Tempo de Treino</Label>
+              {isEditing ? (
+                <div className="grid grid-cols-2 gap-2">
+                  {(Object.entries(EXPERIENCE_LABELS) as [ExperienceLevel, string][]).map(([value, label]) => {
+                    const yearsMap: Record<ExperienceLevel, number> = {
+                      beginner: 0.5,
+                      intermediate: 2,
+                      advanced: 4,
+                      elite: 7
+                    }
+                    const isSelected = formData.experience_years && 
+                      Math.abs(Number(formData.experience_years) - yearsMap[value]) < 1.5
+                    return (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, experience_years: yearsMap[value].toString() }))}
+                        className={`p-2 rounded-lg border text-xs font-medium transition-all ${
+                          isSelected
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-muted bg-muted/50 hover:bg-muted"
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    )
+                  })}
+                </div>
+              ) : (
+                <Input
+                  value={formData.experience_years 
+                    ? `${formData.experience_years} ano${Number(formData.experience_years) !== 1 ? 's' : ''}` 
+                    : "Não informado"}
+                  disabled
+                  className="bg-muted"
+                />
+              )}
             </div>
           </CardContent>
         </Card>
