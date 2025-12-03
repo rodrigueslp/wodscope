@@ -108,10 +108,10 @@ export default function HistoryPage() {
   return (
     <div className="min-h-screen flex flex-col pb-20">
       {/* Header */}
-      <header className="sticky top-0 z-20 bg-background/80 backdrop-blur-lg border-b border-border px-6 py-4">
-        <div className="flex items-center gap-3">
+      <header className="sticky top-0 z-20 bg-background/80 backdrop-blur-lg border-b border-border px-4 py-4">
+        <div className="flex items-center gap-3 max-w-lg mx-auto">
           <Link href="/dashboard">
-            <Button variant="ghost" size="icon" className="rounded-full">
+            <Button variant="ghost" size="icon" className="rounded-full flex-shrink-0">
               <ArrowLeft className="w-5 h-5" />
             </Button>
           </Link>
@@ -120,8 +120,8 @@ export default function HistoryPage() {
       </header>
 
       {/* Search */}
-      <div className="px-6 py-4">
-        <div className="relative">
+      <div className="px-4 py-4">
+        <div className="relative max-w-lg mx-auto">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input 
             placeholder="Buscar análises..."
@@ -133,7 +133,7 @@ export default function HistoryPage() {
       </div>
 
       {/* History List */}
-      <main className="flex-1 px-6 space-y-6">
+      <main className="flex-1 px-4 space-y-6 max-w-lg mx-auto w-full">
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
@@ -177,26 +177,26 @@ export default function HistoryPage() {
                 {monthWods.map((wod) => {
                   const analysis = wod.ai_analysis as WodAnalysis | null
                   return (
-                    <Card key={wod.id} className="glass">
+                    <Card key={wod.id} className="glass overflow-hidden">
                       <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                          <Link href={`/analysis/${wod.id}`} className="flex items-center gap-3 flex-1">
+                        <div className="flex items-center gap-3">
+                          <Link href={`/analysis/${wod.id}`} className="flex items-center gap-3 flex-1 min-w-0">
                             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
                               <Target className="w-5 h-5 text-primary" />
                             </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-medium truncate">
+                            <div className="flex-1 min-w-0 overflow-hidden">
+                              <p className="font-medium text-sm truncate">
                                 {analysis?.workout_summary?.split('\n')[0] || wod.original_text?.substring(0, 30) || 'WOD'}
                               </p>
-                              <p className="text-sm text-muted-foreground truncate max-w-[200px]">
-                                {analysis?.intent?.substring(0, 50) || 'Análise disponível'}
+                              <p className="text-xs text-muted-foreground truncate">
+                                {analysis?.intent?.substring(0, 60) || 'Análise disponível'}...
                               </p>
                               <p className="text-xs text-muted-foreground mt-0.5">
                                 {formatDate(wod.created_at)}
                               </p>
                             </div>
                           </Link>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1 flex-shrink-0">
                             <Button
                               variant="ghost"
                               size="icon"
