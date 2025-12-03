@@ -19,7 +19,7 @@ import {
 } from "lucide-react"
 import {
   AnalysisSkeleton,
-  BarbellWeights,
+  EquipmentWeights,
   InjuryAlert,
   InjuryBodyMap,
   StrategyCard,
@@ -259,13 +259,13 @@ export default function AnalysisPage() {
 
           {/* Loads Tab */}
           <TabsContent value="loads" className="space-y-4 mt-6">
-            {suggestedWeight && suggestedWeight >= 20 && (
+            {suggestedWeight && suggestedWeight > 0 && (
               <Card className="glass">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base">Montagem da Barra</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <BarbellWeights weightKg={suggestedWeight} />
+                <CardContent className="pt-6">
+                  <EquipmentWeights 
+                    weightKg={suggestedWeight} 
+                    suggestedWeightsText={analysis.suggested_weights}
+                  />
                 </CardContent>
               </Card>
             )}

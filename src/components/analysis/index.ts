@@ -1,5 +1,5 @@
 export { AnalysisLoadingScreen, AnalysisSkeleton } from './loading-messages'
-export { BarbellWeights, BarbellWeightsCompact } from './barbell-weights'
+export { BarbellWeights, BarbellWeightsCompact, EquipmentWeights } from './barbell-weights'
 export { InjuryAlert, InjuryBadge, InjuryBodyMap } from './injury-alert'
 export { StrategyCard, IntentCard, WorkoutSummaryCard, ScalingOptionCard } from './strategy-card'
 
