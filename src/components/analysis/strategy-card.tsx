@@ -10,13 +10,33 @@ interface StrategyCardProps {
 }
 
 export function StrategyCard({ strategy, className }: StrategyCardProps) {
-  // Tenta quebrar a estratégia em passos se tiver numeração ou bullets
-  const steps = strategy
-    .split(/(?:\d+\.|•|-|\n)/)
-    .map(s => s.trim())
-    .filter(s => s.length > 0)
-
-  const hasSteps = steps.length > 1
+  // Detecta se tem passos numerados claros (1. 2. 3.) ou bullets (• -)
+  const hasNumberedSteps = /^\s*\d+\.\s/.test(strategy) || /\n\s*\d+\.\s/.test(strategy)
+  const hasBulletPoints = /^\s*[•\-]\s/.test(strategy) || /\n\s*[•\-]\s/.test(strategy)
+  
+  let steps: string[] = []
+  
+  if (hasNumberedSteps) {
+    // Split por números seguidos de ponto (1. 2. 3.)
+    steps = strategy
+      .split(/\n?\s*\d+\.\s+/)
+      .map(s => s.trim())
+      .filter(s => s.length > 10) // Ignora fragmentos muito curtos
+  } else if (hasBulletPoints) {
+    // Split por bullets
+    steps = strategy
+      .split(/\n?\s*[•\-]\s+/)
+      .map(s => s.trim())
+      .filter(s => s.length > 10)
+  }
+  
+  // Se não detectou passos válidos ou os passos são muito curtos, mostra como parágrafos
+  const hasValidSteps = steps.length > 1
+  
+  // Se não tem passos, quebra por parágrafos (duas quebras de linha ou sentenças longas)
+  const paragraphs = !hasValidSteps 
+    ? strategy.split(/\n\n+/).map(p => p.trim()).filter(p => p.length > 0)
+    : []
 
   return (
     <Card className={cn("glass overflow-hidden", className)}>
@@ -29,7 +49,7 @@ export function StrategyCard({ strategy, className }: StrategyCardProps) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {hasSteps ? (
+        {hasValidSteps ? (
           <div className="space-y-3">
             {steps.map((step, index) => (
               <div 
@@ -45,8 +65,16 @@ export function StrategyCard({ strategy, className }: StrategyCardProps) {
               </div>
             ))}
           </div>
+        ) : paragraphs.length > 1 ? (
+          <div className="space-y-4">
+            {paragraphs.map((paragraph, index) => (
+              <p key={index} className="text-sm text-muted-foreground leading-relaxed">
+                {paragraph}
+              </p>
+            ))}
+          </div>
         ) : (
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
             {strategy}
           </p>
         )}
