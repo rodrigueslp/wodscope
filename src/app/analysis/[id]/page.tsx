@@ -38,6 +38,28 @@ function extractWeight(text: string): number | null {
   return match ? parseInt(match[1]) : null
 }
 
+// Componente que encapsula a lógica de mostrar equipamento
+function EquipmentCard({ weightKg, suggestedWeightsText }: { weightKg: number; suggestedWeightsText: string }) {
+  // Verifica se deve mostrar o card
+  const hasEquipment = suggestedWeightsText && (
+    /kettlebell|kb|swing|dumbbell|db|haltere|barra|barbell|anilha|thruster|clean|snatch|deadlift|squat|overhead|press|jerk/i.test(suggestedWeightsText) ||
+    /\d+\s*kg/i.test(suggestedWeightsText)
+  )
+  
+  if (!hasEquipment) return null
+  
+  return (
+    <Card className="glass">
+      <CardContent className="pt-6">
+        <EquipmentWeights 
+          weightKg={weightKg} 
+          suggestedWeightsText={suggestedWeightsText}
+        />
+      </CardContent>
+    </Card>
+  )
+}
+
 export default function AnalysisPage() {
   const params = useParams()
   const router = useRouter()
@@ -259,16 +281,10 @@ export default function AnalysisPage() {
 
           {/* Loads Tab */}
           <TabsContent value="loads" className="space-y-4 mt-6">
-            {suggestedWeight && suggestedWeight > 0 && (
-              <Card className="glass">
-                <CardContent className="pt-6">
-                  <EquipmentWeights 
-                    weightKg={suggestedWeight} 
-                    suggestedWeightsText={analysis.suggested_weights}
-                  />
-                </CardContent>
-              </Card>
-            )}
+            <EquipmentCard 
+              weightKg={suggestedWeight || 0} 
+              suggestedWeightsText={analysis.suggested_weights}
+            />
 
             <Card className="glass border-primary/20">
               <CardHeader className="pb-2">

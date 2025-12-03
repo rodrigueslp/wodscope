@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils"
 
 // Tipos de equipamento
-type EquipmentType = "barbell" | "kettlebell" | "dumbbell"
+type EquipmentType = "barbell" | "kettlebell" | "dumbbell" | "none"
 
 interface WeightDisplayProps {
   weightKg: number
@@ -13,17 +13,47 @@ interface WeightDisplayProps {
 
 // Detecta o tipo de equipamento baseado no texto
 function detectEquipmentType(text?: string): EquipmentType {
-  if (!text) return "barbell"
+  if (!text) return "none"
   
   const lowerText = text.toLowerCase()
   
+  // Kettlebell
   if (lowerText.includes("kettlebell") || lowerText.includes("kb") || lowerText.includes("swing")) {
     return "kettlebell"
   }
+  
+  // Dumbbell
   if (lowerText.includes("dumbbell") || lowerText.includes("db") || lowerText.includes("haltere")) {
     return "dumbbell"
   }
   
+  // Barbell - verifica palavras específicas
+  if (
+    lowerText.includes("barra") || 
+    lowerText.includes("barbell") ||
+    lowerText.includes("anilha") ||
+    lowerText.includes("thruster") ||
+    lowerText.includes("clean") ||
+    lowerText.includes("snatch") ||
+    lowerText.includes("deadlift") ||
+    lowerText.includes("squat") ||
+    lowerText.includes("front squat") ||
+    lowerText.includes("back squat") ||
+    lowerText.includes("overhead") ||
+    lowerText.includes("press") ||
+    lowerText.includes("jerk")
+  ) {
+    return "barbell"
+  }
+  
+  // Se menciona kg mas não é nenhum dos acima, pode ser outro tipo
+  // Verifica se tem um peso sugerido
+  const hasWeight = /\d+\s*kg/i.test(text)
+  if (!hasWeight) {
+    return "none"
+  }
+  
+  // Default para barbell se tem peso mas não identificou o equipamento
   return "barbell"
 }
 
@@ -235,13 +265,19 @@ export function EquipmentWeights({ weightKg, suggestedWeightsText, className }: 
   const extractedWeight = extractWeight(suggestedWeightsText)
   const displayWeight = extractedWeight || weightKg
   
+  // Se não há equipamento de peso, não renderiza nada
+  if (equipmentType === "none") {
+    return null
+  }
+  
   const plates = equipmentType === "barbell" ? calculatePlates(displayWeight) : []
   const plateWeight = displayWeight - BAR_WEIGHT
 
-  const equipmentLabels = {
+  const equipmentLabels: Record<EquipmentType, string> = {
     barbell: "Montagem da Barra",
     kettlebell: "Kettlebell Sugerido",
-    dumbbell: "Dumbbell Sugerido"
+    dumbbell: "Dumbbell Sugerido",
+    none: ""
   }
 
   return (
