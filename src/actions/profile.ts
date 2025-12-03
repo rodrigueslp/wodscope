@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
-import type { ProfileUpdate, PRs } from '@/lib/database.types'
+import type { ProfileUpdate, PRs, Gender } from '@/lib/database.types'
 
 /**
  * Busca o perfil do usuário logado
@@ -36,6 +36,10 @@ export async function upsertProfile(formData: {
   full_name?: string
   prs?: PRs
   injuries?: string
+  age?: number
+  gender?: Gender
+  height?: number
+  experience_years?: number
 }) {
   const supabase = await createClient()
   
@@ -50,6 +54,10 @@ export async function upsertProfile(formData: {
     full_name: formData.full_name,
     prs: formData.prs,
     injuries: formData.injuries,
+    age: formData.age,
+    gender: formData.gender,
+    height: formData.height,
+    experience_years: formData.experience_years,
   }
 
   const { error } = await supabase
