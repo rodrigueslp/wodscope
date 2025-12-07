@@ -39,4 +39,6 @@ next-env.d.ts
 .vscode/
 .idea/
 
-.cursor/mcp.json
+# Cursor MCP (desenvolvimento local)
+.cursor/
+mcp/
