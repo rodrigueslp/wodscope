@@ -135,7 +135,8 @@ SAÍDA OBRIGATÓRIA (JSON estrito, sem markdown):
       "reason": "Motivo da adaptação falando com o atleta (ex: 'Por causa da sua lesão no ombro, substitua por...')"
     }
   ],
-  "suggested_weights": "Cargas sugeridas FALANDO DIRETAMENTE (ex: 'Use 43kg no thruster - isso é 65% do seu 1RM e vai te permitir manter o ritmo...')"
+  "suggested_weights": "Cargas sugeridas FALANDO DIRETAMENTE (ex: 'Use 43kg no thruster - isso é 65% do seu 1RM e vai te permitir manter o ritmo...')",
+  "movements": ["lista", "de", "movimentos", "identificados no WOD em inglês para busca de tutoriais (ex: 'snatch', 'muscle up', 'double under', 'thruster', 'pull up')"]
 }
 
 REGRAS:
@@ -145,7 +146,8 @@ REGRAS:
 - Se não houver PRs cadastrados, sugira cargas para iniciante/intermediário/avançado
 - Se não houver lesões, mantenha scaling_options vazio []
 - Sempre responda em português brasileiro
-- Seja específico, prático e direto nas dicas`
+- Seja específico, prático e direto nas dicas
+- IMPORTANTE: No campo "movements", liste os principais movimentos em INGLÊS (ex: "snatch", "clean and jerk", "muscle up", "box jump", "double under"). Máximo 5 movimentos mais relevantes.`
 
     // 5. Chamar a API da OpenAI com GPT-4 Vision
     const response = await openai.chat.completions.create({
@@ -341,13 +343,15 @@ SAÍDA OBRIGATÓRIA (JSON estrito):
       "reason": "Motivo falando com o atleta"
     }
   ],
-  "suggested_weights": "Cargas sugeridas FALANDO DIRETAMENTE com o atleta"
+  "suggested_weights": "Cargas sugeridas FALANDO DIRETAMENTE com o atleta",
+  "movements": ["lista de movimentos em INGLÊS para busca de tutoriais (ex: 'snatch', 'clean', 'muscle up')"]
 }
 
 REGRAS:
 - SEMPRE fale em 2ª pessoa (você/seu/sua), NUNCA em 3ª pessoa
 - Responda em português brasileiro
-- Seja específico, prático e motivador`
+- Seja específico, prático e motivador
+- No campo "movements", liste os principais movimentos em INGLÊS. Máximo 5.`
 
     const response = await openai.chat.completions.create({
       model: 'gpt-4o',

@@ -16,6 +16,9 @@ export interface WodAnalysis {
   
   /** Sugestões de carga baseadas nos PRs */
   suggested_weights: string
+  
+  /** Lista de movimentos identificados no WOD (para tutoriais) */
+  movements: string[]
 }
 
 export interface ScalingOption {

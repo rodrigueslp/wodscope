@@ -25,7 +25,8 @@ import {
   StrategyCard,
   IntentCard,
   WorkoutSummaryCard,
-  ScalingOptionCard
+  ScalingOptionCard,
+  TutorialVideos
 } from "@/components/analysis"
 import { ResultForm } from "@/components/wod"
 import { getWodById, deleteWod } from "@/actions/wods"
@@ -252,6 +253,11 @@ export default function AnalysisPage() {
           {/* Strategy Tab */}
           <TabsContent value="strategy" className="space-y-4 mt-6">
             <StrategyCard strategy={analysis.strategy} />
+            
+            {/* Tutorial Videos - só aparece se houver movimentos */}
+            {analysis.movements && analysis.movements.length > 0 && (
+              <TutorialVideos movements={analysis.movements} />
+            )}
             
             <Card className="glass border-primary/20">
               <CardHeader className="pb-2">
